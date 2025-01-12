@@ -45,6 +45,7 @@ import com.duckduckgo.app.browser.databinding.IncludeCustomTabToolbarBinding
 import com.duckduckgo.app.browser.databinding.IncludeFindInPageBinding
 import com.duckduckgo.app.browser.omnibar.Omnibar.ViewMode.CustomTab
 import com.duckduckgo.app.browser.omnibar.Omnibar.ViewMode.Error
+import com.duckduckgo.app.browser.omnibar.Omnibar.ViewMode.MaliciousSiteWarning
 import com.duckduckgo.app.browser.omnibar.Omnibar.ViewMode.NewTab
 import com.duckduckgo.app.browser.omnibar.Omnibar.ViewMode.SSLWarning
 import com.duckduckgo.app.browser.omnibar.OmnibarLayout.Decoration
@@ -170,6 +171,7 @@ class Omnibar(
     sealed class ViewMode {
         data object Error : ViewMode()
         data object SSLWarning : ViewMode()
+        data object MaliciousSiteWarning : ViewMode()
         data object NewTab : ViewMode()
         data class Browser(val url: String?) : ViewMode()
         data class CustomTab(
@@ -403,6 +405,15 @@ class Omnibar(
                     shieldIcon.isInvisible = true
                     searchIcon.isInvisible = true
                     daxIcon.isInvisible = true
+                }
+            }
+
+            MaliciousSiteWarning -> {
+                if (refactorFlagEnabled) {
+                    newOmnibar.decorate(Mode(viewMode))
+                } else {
+                    setExpanded(true)
+                    shieldIcon.isInvisible = true
                 }
             }
 
