@@ -47,7 +47,7 @@ import com.duckduckgo.app.pixels.AppPixelName
 import com.duckduckgo.app.settings.SettingsActivity
 import com.duckduckgo.app.settings.db.SettingsDataStore
 import com.duckduckgo.app.statistics.pixels.Pixel
-import com.duckduckgo.app.tabs.TabMultiSelectionFeature
+import com.duckduckgo.app.tabs.TabManagerFeatureFlags
 import com.duckduckgo.app.tabs.model.TabEntity
 import com.duckduckgo.app.tabs.model.TabSwitcherData.LayoutType
 import com.duckduckgo.app.tabs.ui.TabSwitcherViewModel.Command
@@ -118,7 +118,7 @@ class TabSwitcherActivity : DuckDuckGoActivity(), TabSwitcherListener, Coroutine
     lateinit var appBuildConfig: AppBuildConfig
 
     @Inject
-    lateinit var tabMultiSelectionFeature: TabMultiSelectionFeature
+    lateinit var tabManagerFeatureFlags: TabManagerFeatureFlags
 
     private val viewModel: TabSwitcherViewModel by bindViewModel()
 
@@ -156,7 +156,7 @@ class TabSwitcherActivity : DuckDuckGoActivity(), TabSwitcherListener, Coroutine
     }
 
     private fun configureFab() {
-        if (tabMultiSelectionFeature.self().isEnabled()) {
+        if (tabManagerFeatureFlags.multiSelection().isEnabled()) {
             tabsFab.show()
             tabsFab.setOnClickListener {
                 viewModel.onFabClicked()
@@ -203,21 +203,16 @@ class TabSwitcherActivity : DuckDuckGoActivity(), TabSwitcherListener, Coroutine
         tabsRecycler.addItemDecoration(tabItemDecorator)
         tabsRecycler.setHasFixedSize(true)
 
-        if (tabMultiSelectionFeature.self().isEnabled()) {
+        if (tabManagerFeatureFlags.multiSelection().isEnabled()) {
             tabsRecycler.addOnScrollListener(
                 object : RecyclerView.OnScrollListener() {
                     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                         super.onScrolled(recyclerView, dx, dy)
-                        if (dy < 0) {
+                        if (dy > 0) {
                             tabsFab.shrink()
-                        }
-                    }
-
-                    override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                        if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                        } else if (dy < 0) {
                             tabsFab.extend()
                         }
-                        super.onScrollStateChanged(recyclerView, newState)
                     }
                 },
             )
