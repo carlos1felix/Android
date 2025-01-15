@@ -22,9 +22,13 @@ import com.duckduckgo.feature.toggles.api.Toggle
 
 @ContributesRemoteFeature(
     scope = AppScope::class,
-    featureName = "tabMultiSelection",
+    featureName = "tabManager",
 )
-interface TabMultiSelectionFeature {
+interface TabManagerFeatureFlags {
     @Toggle.DefaultValue(false)
+    @Toggle.InternalAlwaysEnabled
     fun self(): Toggle
+
+    @Toggle.DefaultValue(false)
+    fun multiSelection(): Toggle
 }
