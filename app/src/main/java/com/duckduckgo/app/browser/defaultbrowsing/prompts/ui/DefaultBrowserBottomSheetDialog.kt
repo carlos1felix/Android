@@ -33,6 +33,8 @@ class DefaultBrowserBottomSheetDialog(private val context: Context) : BottomShee
 
     private val binding: BottomSheetDefaultBrowserBinding = BottomSheetDefaultBrowserBinding.inflate(LayoutInflater.from(context))
 
+    var eventListener: EventListener? = null
+
     init {
         setContentView(binding.root)
         // We need the dialog to always be expanded and not draggable because the content takes up a lot of vertical space and requires a scroll view,
@@ -40,6 +42,19 @@ class DefaultBrowserBottomSheetDialog(private val context: Context) : BottomShee
         this.behavior.state = BottomSheetBehavior.STATE_EXPANDED
         this.behavior.isDraggable = false
         roundCornersAlways(this)
+
+        setOnShowListener {
+            eventListener?.onShown()
+        }
+        setOnDismissListener {
+            eventListener?.onDismissed()
+        }
+        binding.defaultBrowserBottomSheetDialogPrimaryButton.setOnClickListener {
+            eventListener?.onSetBrowserButtonClicked()
+        }
+        binding.defaultBrowserBottomSheetDialogGhostButton.setOnClickListener {
+            eventListener?.onNotNowButtonClicked()
+        }
     }
 
     /**
@@ -59,5 +74,12 @@ class DefaultBrowserBottomSheetDialog(private val context: Context) : BottomShee
                 .build()
             bottomSheet?.background = shapeDrawable
         }
+    }
+
+    interface EventListener {
+        fun onShown()
+        fun onDismissed()
+        fun onSetBrowserButtonClicked()
+        fun onNotNowButtonClicked()
     }
 }
