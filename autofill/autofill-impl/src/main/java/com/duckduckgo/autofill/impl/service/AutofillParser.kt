@@ -24,7 +24,6 @@ import android.os.Build.VERSION_CODES
 import android.text.InputType
 import android.view.View
 import android.view.autofill.AutofillId
-import androidx.annotation.RequiresApi
 import com.duckduckgo.appbuildconfig.api.AppBuildConfig
 import com.duckduckgo.di.scopes.AppScope
 import com.squareup.anvil.annotations.ContributesBinding
